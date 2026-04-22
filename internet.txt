@@ -1,0 +1,102 @@
+#-#-# Intro
+- decentralizovane
+- IP protokol
+- komunikace kazdy s kazdym
+- packet switching
+    - packets with source and destination adresses
+    - packet goes from router to router; each router sends it to one of its neighbours
+
+- ICANN (organisation)
+    - allocates IP adress
+- ISOC (organisation)
+    - internet standarts
+
+#-#-# Functioning of internet
+- Layers
+    1) Physical
+        - cables
+    2) Link
+        - local sites
+    3) Network 
+        - IP adresses
+    4) Transport
+        - TCT
+    5) Aplication
+        - aplication protocols
+
+#-#-# IP adress
+- IP v.4
+- IP prefix
+    - one for each local network
+
+Route = a way from router to router
+Routing table = table with routes and how to handle them
+
+Forwarding = getting packet, examines the destination adress in the routing table, sends it where the table says
+Hop count = number; decreases by one for each Forwarding - packet gets deleted after reaching zero
+
+#-#-# Routing
+    = creating a routing table
+    a) manual
+    b) dynamic
+        - routers comunicate -> from the data the table is created
+        - finding the shortest way through graph
+
+        - OSPF
+            - neighbour discovery (hello protocol with hello msgs)
+                -> establish & maintain comunication ("adjecency")
+                - hello msgs are send continuesly (hot ther F*** is this written?!)
+                    - if none recieved after a dead period -> router removed from known neighbours
+            - LSA zaznamy 
+                SMALL NETWORKS ONLY!!!!
+                - sent after a change in neighbours (or after recieving one)
+                - have data about all neighbours -> reciever gets datat about network
+            - After reciving
+                Never LSA packet - acknowledgement and propagation
+                Older            - send back newer
+                Same             - acknowledgement
+            - Data processing
+                = Dijskra's algorithm
+
+        - autonomous system
+            -collection of systems under single administrative domain
+            - hides inside of one IP prefix
+                - inside changes aren't propageted to outside
+            - ASN = auto. sys. number
+
+        - grahp of ASNs
+            - tree (mutliple interconnected ones)
+                - unstream & downstream conections
+                    (downstream member pays for usage of the conection)
+                        -> downstream membres want peer-to-peer conections
+                            (- connection goes through max. one peer-to-peer conection)
+                - multiple upstream conections
+                - top level nodes are peered each with every one
+            - bussines side
+                - no economic insentisive to make conections
+                                                            from upstream  to another upstream (costs me money)
+                                                            from peer      to my upstream      (costs me money)
+                                                            from peer      to another peer     (computationaly hard)
+                - shortest path != cheapest one
+            - Border Gateway protocol
+                - policy-based routing
+                - global routes
+                - manually configured
+                - announcing only my best routes
+                a) external BGP - between different ASNs
+                b) internal BGP - inside of ASN
+                - different rules
+                - working:
+                    - recieve routes
+                    - filter potentialy harmfull things
+                    - best path selection
+                    - export policy filtering
+                    - advertise routes
+                - attributes
+                    - AS_PATH
+                        sequence of AS the info packet went through
+                        newest AS is the first
+                        my AS is already included -> cycle -> delete
+                        shorter path lenght = better
+                            I have mutliple recieving ports, but outside decides where to send packets to
+                                -> if I place my ASN in the sequence multiple times, the it makes the sequence longer and thus less convienient
